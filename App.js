@@ -1,9 +1,6 @@
 import * as React from 'react';
 import { Text, View, StyleSheet, Button, TextInput, Image, ScrollView, Modal } from 'react-native';
-import Constants from 'expo-constants';
-import * as Localization from 'expo-localization';
-import i18n from 'i18n-js';
-import { fr, en } from './languages';
+import Header from "./components/Header";
 
 class ItemView extends React.Component {
   deleteItem = () => {
@@ -12,13 +9,15 @@ class ItemView extends React.Component {
   };
 
   render() {
-    const { url, name, price } = this.props.item;
+    const { name, price, url } = this.props.item;
     return (
+      <View>
       <View style={styles.itemContainer}>
-        <Image source={{ uri: url }} style={{ width: '100%', height: 200 }} />
+        <Image source={{ uri: url }} style={{ width: '100%', height: 150 }} />
         <Text style={styles.itemName}>{name}</Text>
         <Text style={styles.itemPrice}>{price}</Text>
-        <Button title={i18n.t("Delete")} onPress={this.deleteItem} />
+        <Button color= "#ff4500" title={"Supprimer"} onPress={this.deleteItem} />
+      </View>
       </View>
     );
   }
@@ -28,15 +27,12 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      items: [],
       itemName: '',
       itemPrice: '',
       itemUrl: '',
-      items: [],
       showAddModal: false,
     };
-    i18n.fallbacks = true;
-    i18n.translations = { fr, en };
-    i18n.locale = Localization.locale;
   }
 
   addItem = () => {
@@ -45,9 +41,9 @@ export default class App extends React.Component {
 
     const newItem = {
       id: id,
-      name: itemName,
-      price: itemPrice,
       url: itemUrl,
+      name: itemName,
+      price: itemPrice+"$"
     };
 
     this.setState((prevState) => ({
@@ -65,7 +61,7 @@ export default class App extends React.Component {
   renderItemForm = () => {
     return (
       <View style={styles.itemForm}>
-        <TextInput clearTextOnFocus
+        <TextInput
           placeholder="Nom"
           style={styles.input}
           value={this.state.itemName}
@@ -73,7 +69,7 @@ export default class App extends React.Component {
             this.setState({ itemName: text });
           }}
         />
-        <TextInput clearTextOnFocus
+        <TextInput
           placeholder="Prix"
           style={styles.input}
           value={this.state.itemPrice}
@@ -81,7 +77,7 @@ export default class App extends React.Component {
             this.setState({ itemPrice: text });
           }}
         />
-        <TextInput clearTextOnFocus
+        <TextInput
           placeholder="URL"
           style={styles.input}
           value={this.state.itemUrl}
@@ -104,6 +100,8 @@ export default class App extends React.Component {
 
   render() {
     return (
+      <>
+      <Header />
       <View style={styles.container}>
         <Button title="Ajouter" onPress={this.showModal} />
         <Modal
@@ -119,6 +117,7 @@ export default class App extends React.Component {
           ))}
         </ScrollView>
       </View>
+      </>
     );
   }
 }
@@ -127,9 +126,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingTop: Constants.statusBarHeight,
+    paddingTop: 10,
+    paddingBottom: 10,
     backgroundColor: '#ecf0f1',
-    padding: 8,
+    padding: 20,
   },
   input: {
     height: 40,
@@ -138,10 +138,10 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   itemForm: {
-    margin: 16
+    margin: 16,
   },
   itemContainer: {
-    marginVertical: 16,
+    marginVertical: 25,
   },
   itemName: {
     fontSize: 20,
@@ -152,9 +152,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   modalContainer: {
-    flex: 1,
     justifyContent: 'center',
-    height: 400,
     borderColor: "black",
     borderWidth: 1,
     marginVertical: 64,
